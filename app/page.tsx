@@ -1,9 +1,53 @@
-import Image from "next/image";
+import prisma from "@/lib/prisma";
 
-export default function Home() {
+export default async function DashboardPage() {
+  const products = await prisma.product.findMany({
+    orderBy: { updatedAt: 'desc' }
+  });
+
   return (
-    <div>
-      Home
+    <div className="min-h-screen p-8 bg-brand-bg text-brand-dark">
+      <header className="mb-10 flex justify-between items-end p-2">
+        <div>
+          <h1 className="text-4xl font-bold text-brand-dark pb-2">StockFlow AI</h1>
+          <p className="text-brand-primary font-medium">Inventory Overview</p>
+        </div>
+        <div className="bg-brand-accent/20 px-4 py-2 rounded-lg border border-brand-accent">
+          <span className="text-sm font-semibold uppercase tracking-wider">Total Items: {products.length}</span>
+        </div>
+      </header>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {products.map((item) => (
+          <div 
+            key={item.id} 
+            className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-xl font-bold">{item.name}</h3>
+              <span className="text-brand-primary font-mono font-bold">${Number(item.price).toFixed(2)}</span>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex-1 bg-brand-bg h-3 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full transition-all ${item.quantity <= item.minThreshold ? 'bg-red-500' : 'bg-brand-primary'}`} 
+                  style={{ width: `${Math.min((item.quantity / item.minThreshold) * 50, 100)}%` }}
+                />
+              </div>
+              <span className={`font-bold ${item.quantity <= item.minThreshold ? 'text-red-600' : 'text-brand-dark'}`}>
+                {item.quantity} units
+              </span>
+            </div>
+
+            {item.quantity <= item.minThreshold && (
+              <p className="mt-4 text-xs font-bold text-red-500 uppercase tracking-tighter">
+                ⚠️ Low Stock - Reorder Suggested
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
