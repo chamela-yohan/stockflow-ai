@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import ChatInterface from "./components/ChatInterface";
 
 export default async function DashboardPage() {
   const products = await prisma.product.findMany({
@@ -31,8 +32,9 @@ export default async function DashboardPage() {
             <div className="flex items-center gap-4">
               <div className="flex-1 bg-brand-bg h-3 rounded-full overflow-hidden">
                 <div 
-                  className={`h-full transition-all ${item.quantity <= item.minThreshold ? 'bg-red-500' : 'bg-brand-primary'}`} 
+                  className={`h-full transition-all ${item.quantity <= item.minThreshold ? 'bg-red-500' : 'bg-amber-600'}`} 
                   style={{ width: `${Math.min((item.quantity / item.minThreshold) * 50, 100)}%` }}
+                  
                 />
               </div>
               <span className={`font-bold ${item.quantity <= item.minThreshold ? 'text-red-600' : 'text-brand-dark'}`}>
@@ -48,6 +50,8 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+
+      <ChatInterface/>
     </div>
   );
 }
