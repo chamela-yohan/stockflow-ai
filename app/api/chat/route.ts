@@ -1,9 +1,10 @@
 import { OpenRouter } from "@openrouter/sdk";
 import { NextRequest } from "next/server";
 import { Prisma } from "@/app/generated/prisma/browser";
+import "dotenv/config";
 
 const openrouter = new OpenRouter({
-  apiKey: "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",
+  apiKey: process.env["OPENROUTER_API_KEY"],
 });
 
 export async function POST(req: NextRequest) {

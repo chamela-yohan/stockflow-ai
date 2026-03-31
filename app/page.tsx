@@ -30,7 +30,7 @@ export default async function DashboardPage() {
             </div>
             
             <div className="flex items-center gap-4">
-              <div className="flex-1 bg-brand-bg h-3 rounded-full overflow-hidden">
+              <div className="flex-1 bg-brand-bg h-3 rounded-full overflow-hidden shadow shadow-gray-200">
                 <div 
                   className={`h-full transition-all ${item.quantity <= item.minThreshold ? 'bg-red-500' : 'bg-amber-600'}`} 
                   style={{ width: `${Math.min((item.quantity / item.minThreshold) * 50, 100)}%` }}
