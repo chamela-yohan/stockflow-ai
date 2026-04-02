@@ -1,14 +1,27 @@
 import prisma from "@/lib/prisma";
 import ChatInterface from "./components/ChatInterface";
 import { getStockPredictions } from "./lib/predictions";
+import { auth, UserButton } from "@clerk/nextjs/server";
 
 export default async function DashboardPage() {
   const products = await prisma.product.findMany({
     orderBy: { updatedAt: "desc" },
   });
 
+  const { sessionClaims } = await auth();
+  
+  // Check if user has 'admin' role in their metadata
+  const isAdmin = sessionClaims?.metadata?.role === "admin";
+
+
   return (
     <div className="min-h-screen p-8 bg-brand-bg text-brand-dark">
+
+      <nav className="flex justify-between items-center mb-12">
+        <h1 className="text-2xl font-bold text-brand-dark underline decoration-brand-accent">StockFlow.ai</h1>
+        <UserButton />
+      </nav>
+
       <header className="mb-10 flex justify-between items-end p-2 ">
         <div >
           <h1 className="text-4xl font-bold text-brand-dark pb-2">
@@ -78,7 +91,8 @@ export default async function DashboardPage() {
         })}
       </div>
 
-      <ChatInterface />
+      {/* Only render Chat for Admins */}
+      {isAdmin && <ChatInterface />}
     </div>
   );
 }
