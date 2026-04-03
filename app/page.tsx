@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import ChatInterface from "./components/ChatInterface";
 import { getStockPredictions } from "./lib/predictions";
-import { auth, UserButton } from "@clerk/nextjs/server";
+import { auth} from "@clerk/nextjs/server";
+import {UserButton } from "@clerk/nextjs";
 
 export default async function DashboardPage() {
   const products = await prisma.product.findMany({
