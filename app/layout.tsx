@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import {
+  ClerkProvider,
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,13 +30,45 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html
-        lang="en"
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <body className="min-h-full flex flex-col">{children}</body>
-      </html>
-    </ClerkProvider>
+        <ClerkProvider>
+          <header className="mb-10 p-4 pb-6 shadow-amber-900 shadow">
+            <nav className="flex items-center justify-between">
+
+              <div className="flex items-center gap-3">
+                <Show when="signed-in">
+                  <UserButton />
+                </Show>
+
+                <h1 className="text-3xl font-bold text-brand-dark">
+                  StockFlow AI
+                </h1>
+              </div>
+
+          
+              <div className="flex items-center gap-3">
+                <Show when="signed-out">
+                  <SignInButton>
+                    <button className="font-bold hover:bg-amber-900 bg-amber-600 shadow px-5 py-2 rounded-lg text-white">
+                      Sign In
+                    </button>
+                  </SignInButton>
+
+                  <SignUpButton>
+                    <button className="font-bold hover:bg-amber-900 bg-amber-700 shadow px-5 py-2 rounded-lg text-white">
+                      Sign Up
+                    </button>
+                  </SignUpButton>
+                </Show>
+              </div>
+            </nav>
+          </header>
+          {children}
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

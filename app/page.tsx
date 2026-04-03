@@ -1,39 +1,35 @@
 import prisma from "@/lib/prisma";
 import ChatInterface from "./components/ChatInterface";
 import { getStockPredictions } from "./lib/predictions";
-import { auth} from "@clerk/nextjs/server";
-import {UserButton } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import {
+  ClerkProvider,
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export default async function DashboardPage() {
   const products = await prisma.product.findMany({
     orderBy: { updatedAt: "desc" },
   });
 
-  const { sessionClaims } = await auth();
-  
-  // Check if user has 'admin' role in their metadata
-  const isAdmin = sessionClaims?.metadata?.role === "admin";
+  const user = await currentUser();
 
+  // Check if user has 'admin' role in their metadata
+  const isAdmin = user?.publicMetadata?.role === "admin";
 
   return (
     <div className="min-h-screen p-8 bg-brand-bg text-brand-dark">
-
-      <nav className="flex justify-between items-center mb-12">
-        <h1 className="text-2xl font-bold text-brand-dark underline decoration-brand-accent">StockFlow.ai</h1>
-        <UserButton />
-      </nav>
-
       <header className="mb-10 flex justify-between items-end p-2 ">
-        <div >
-          <h1 className="text-4xl font-bold text-brand-dark pb-2">
-            StockFlow AI
-          </h1>
-          <p className="text-brand-primary font-medium">Inventory Overview</p>
+        <div>
+          <h1 className="font-bold text-2xl">Inventory Overview</h1>
         </div>
-        <div className="bg-brand-accent/20 px-4 py-2 rounded-lg border border-brand-accent">
-          <span className="text-sm font-semibold uppercase tracking-wider">
+        <div className="">
+          <h2 className="">
             Total Items: {products.length}
-          </span>
+          </h2>
         </div>
       </header>
 
@@ -46,16 +42,17 @@ export default async function DashboardPage() {
               className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="mt-4 flex items-center justify-between">
-                {prediction?.isUrgent && (
+                {isAdmin && prediction?.isUrgent && (
                   <span className="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">
                     ⚠️ Restock in ~{prediction.daysRemaining} days
                   </span>
                 )}
               </div>
 
-              {prediction && (
+              {isAdmin && prediction && (
                 <p className="mt-4 text-xs text-brand-primary/60 italic">
-                  Burn rate: {prediction.dailyBurnRate} units/day based on 30-day trend.
+                  Burn rate: {prediction.dailyBurnRate} units/day based on
+                  30-day trend.
                 </p>
               )}
 
