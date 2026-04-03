@@ -88,8 +88,6 @@ npx prisma migrate dev --name init
 npx prisma db seed
 ```
 
-> Includes a custom 120-record sales history script.
-
 ---
 
 ### 5. Run Development Server
