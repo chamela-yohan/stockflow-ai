@@ -52,7 +52,7 @@ export default function ChatInterface() {
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${
                   m.role === 'user' 
-                  ? 'bg-brand-primary text-white rounded-br-none' 
+                  ? 'bg-brand-primary border border-amber-600 rounded-br-none' 
                   : 'bg-white border border-brand-muted/30 border-amber-500 text-brand-dark rounded-bl-none shadow-sm'
                 }`}>
                   {m.content}
